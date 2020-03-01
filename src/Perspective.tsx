@@ -1,8 +1,31 @@
-import React, { FunctionComponent, PointerEvent } from "react";
+import React, { useState, FunctionComponent, PointerEvent } from "react";
+import styled from "styled-components";
+import { Svg as Board } from "./Board";
 
-const MAX_DEG_OFFSET = 100;
+interface DegreesState {
+  x: number;
+  y: number;
+}
+
+const MAX_DEG_OFFSET = 25;
+const TRANSFORM_MS_SPEED = 500;
+const INITIAL_STATE = { x: 0, y: 0 };
+
+const Wrapper = styled.div<{ degrees: DegreesState }>`
+  perspective: 80rem;
+
+  ${Board} {
+    transition: transform ${TRANSFORM_MS_SPEED}ms;
+    transform: ${({ degrees: { x, y } }) => {
+      // Note: To manipulate the horizontal perspective we need to target the
+      // opposite axis i.e to change X we target Y (and vice versa).
+      return `rotateY(${x}deg) rotateX(${y}deg);`;
+    }};
+  }
+`;
 
 export const Perspective: FunctionComponent<{}> = ({ children }) => {
+  const [degrees, setDegrees] = useState<DegreesState>(INITIAL_STATE);
   const handlePointerMove = (event: PointerEvent) => {
     // Get positive/negative "3D" degrees for X/Y axis offset:
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -29,27 +52,34 @@ export const Perspective: FunctionComponent<{}> = ({ children }) => {
     const isXPositive = pointerX >= halfWidth;
     const isYPositive = pointerY >= halfHeight;
 
-    // + Caculate ratio for X/Y
-    const calculateRatio = (
-      isPositive: boolean,
-      size: number,
-      pointer: number
-    ): number =>
-      isPositive
-        ? // start with "zero" as the centre and move back so the left side is "one".
-          size / (pointer - size)
-        : // start with "zero" as the centre and move forward so the right side is "one".
-          (size / (size - pointer)) * -1;
-    const xRatio = calculateRatio(isXPositive, halfWidth, pointerX);
-    const yRatio = calculateRatio(isYPositive, halfHeight, pointerY);
+    const xRatio = isXPositive
+      ? // Start with "zero" as the centre and move back so the left side is "one".
+        // Push the left side towards the user.
+        halfWidth / (halfWidth - pointerX)
+      : // Start with "zero" as the centre and move forward so the right side is "one".
+        // Push the right side towards the user.
+        (halfWidth / (pointerX - halfWidth)) * -1;
+
+    const yRatio = isYPositive
+      ? // Start with "zero" as the centre and move up so the top side is "one".
+        // Push the top side towards the user.
+        (halfWidth / (halfWidth - pointerY)) * -1
+      : // Start with "zero" as the centre and move forward so the right side is "one".
+        // Push the top side towards the user.
+        halfWidth / (pointerY - halfWidth);
 
     // Calculate degree offset for X/Y
     const calculateDegrees = (ratio: number): number => MAX_DEG_OFFSET / ratio;
     const xDegrees = calculateDegrees(xRatio);
     const yDegrees = calculateDegrees(yRatio);
 
-    console.log({ xDegrees, yDegrees });
+    // console.log({ xDegrees, yDegrees });
+    setDegrees({ x: xDegrees, y: yDegrees });
   };
 
-  return <div onPointerMove={handlePointerMove}>{children}</div>;
+  return (
+    <Wrapper degrees={degrees} onPointerMove={handlePointerMove}>
+      {children}
+    </Wrapper>
+  );
 };
