@@ -7,28 +7,55 @@ interface DegreesState {
   y: number;
 }
 
-const MAX_DEG_OFFSET = 25;
-const TRANSFORM_MS_SPEED = 500;
-const INITIAL_STATE = { x: 0, y: 0 };
+interface DepthState {
+  layers: number;
+  x: number;
+  y: number;
+}
 
-const Wrapper = styled.div<{ degrees: DegreesState }>`
+const MAX_DEGREES_OFFSET = 25;
+const MAX_DEPTH_OFFSET = 10;
+const TRANSFORM_MS_SPEED = 500;
+const INITIAL_DEGREES_STATE = { x: 0, y: 0 };
+const INITIAL_DEPTH_STATE = { layers: 0, x: 0, y: 0 };
+//
+const FACE_COLOR = "#55a0e2";
+const DEPTH_COLOR = "#376d9c";
+
+const Wrapper = styled.div<{ degrees: DegreesState; depth: DepthState }>`
   perspective: 80rem;
 
   ${Board} {
-    transition: transform ${TRANSFORM_MS_SPEED}ms;
+    fill: ${FACE_COLOR};
+    transition-duration: ${TRANSFORM_MS_SPEED}ms;
+    transition-property: transform filter;
     transform: ${({ degrees: { x, y } }) => {
       // Note: To manipulate the horizontal perspective we need to target the
       // opposite axis i.e to change X we target Y (and vice versa).
       return `rotateY(${x}deg) rotateX(${y}deg);`;
     }};
+    filter: ${({ depth: { layers, x, y } }) => {
+      // Build up each depth layer with a consistent offset incrementer that
+      // moves each layer away to simulate a solid Z axis extrude.
+      return new Array(layers)
+        .fill(0)
+        .reduce(
+          (acc, _, index) =>
+            `${acc} drop-shadow(${x * (index + 1)}px ${y *
+              (index + 1)}px 0px ${DEPTH_COLOR})`,
+          ""
+        )
+        .trimStart();
+    }};
   }
 `;
 
 export const Perspective: FunctionComponent<{}> = ({ children }) => {
-  const [degrees, setDegrees] = useState<DegreesState>(INITIAL_STATE);
+  const [degrees, setDegrees] = useState<DegreesState>(INITIAL_DEGREES_STATE);
+  const [depth, setDepth] = useState<DepthState>(INITIAL_DEPTH_STATE);
   const handlePointerMove = (event: PointerEvent) => {
-    // Get positive/negative "3D" degrees for X/Y axis offset:
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // Get positive/negative "3D" references for X/Y axis offset:
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     // + Get X/Y pointer position in relation to window.
     const { clientX, clientY } = event;
@@ -68,17 +95,29 @@ export const Perspective: FunctionComponent<{}> = ({ children }) => {
         // Push the top side towards the user.
         halfWidth / (pointerY - halfWidth);
 
-    // Calculate degree offset for X/Y
-    const calculateDegrees = (ratio: number): number => MAX_DEG_OFFSET / ratio;
+    // Calculate degree offset for X/Y.
+    const calculateDegrees = (ratio: number): number =>
+      MAX_DEGREES_OFFSET / ratio;
     const xDegrees = calculateDegrees(xRatio);
     const yDegrees = calculateDegrees(yRatio);
 
-    // console.log({ xDegrees, yDegrees });
+    // Calculate depth offset for X/Y.
+    const calculateDepth = (isPositive: boolean, ratio: number): number =>
+      (MAX_DEPTH_OFFSET / Math.abs(ratio) / MAX_DEPTH_OFFSET) *
+      (isPositive ? 1 : -1);
+    const xDepth = calculateDepth(isXPositive, xRatio);
+    const yDepth = calculateDepth(isYPositive, yRatio);
+
     setDegrees({ x: xDegrees, y: yDegrees });
+    setDepth({
+      layers: MAX_DEPTH_OFFSET,
+      x: xDepth,
+      y: yDepth
+    });
   };
 
   return (
-    <Wrapper degrees={degrees} onPointerMove={handlePointerMove}>
+    <Wrapper degrees={degrees} depth={depth} onPointerMove={handlePointerMove}>
       {children}
     </Wrapper>
   );
