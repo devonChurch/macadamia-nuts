@@ -1,7 +1,10 @@
 import React, { FunctionComponent } from "react";
 import styled from "styled-components";
 
-export const Svg = styled.svg``;
+export const Svg = styled.svg`
+  max-height: 100vh;
+  max-width: 100%;
+`;
 
 export const Board: FunctionComponent<{}> = () => (
   <Svg viewBox="0 0 24 24">

@@ -4,7 +4,7 @@ import { Board } from "./Board";
 
 function App() {
   return (
-    <div style={{ padding: "200px" }}>
+    <div>
       <Perspective>
         <Board />
       </Perspective>

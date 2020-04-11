@@ -1,5 +1,6 @@
 import React, { useState, FunctionComponent, PointerEvent } from "react";
 import styled from "styled-components";
+import { useLoadControl } from "eggs-benedict/hooks";
 import { Svg as Board } from "./Board";
 
 interface DegreesState {
@@ -11,6 +12,15 @@ interface DepthState {
   layers: number;
   x: number;
   y: number;
+}
+
+interface Perspective {
+  clientX: number;
+  clientY: number;
+  top: number;
+  left: number;
+  width: number;
+  height: number;
 }
 
 const MAX_DEGREES_OFFSET = 25;
@@ -41,8 +51,9 @@ const Wrapper = styled.div<{ degrees: DegreesState; depth: DepthState }>`
         .fill(0)
         .reduce(
           (acc, _, index) =>
-            `${acc} drop-shadow(${x * (index + 1)}px ${y *
-              (index + 1)}px 0px ${DEPTH_COLOR})`,
+            `${acc} drop-shadow(${x * (index + 1)}px ${
+              y * (index + 1)
+            }px 0px ${DEPTH_COLOR})`,
           ""
         )
         .trimStart();
@@ -53,21 +64,16 @@ const Wrapper = styled.div<{ degrees: DegreesState; depth: DepthState }>`
 export const Perspective: FunctionComponent<{}> = ({ children }) => {
   const [degrees, setDegrees] = useState<DegreesState>(INITIAL_DEGREES_STATE);
   const [depth, setDepth] = useState<DepthState>(INITIAL_DEPTH_STATE);
-  const handlePointerMove = (event: PointerEvent) => {
-    // Get positive/negative "3D" references for X/Y axis offset:
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    // + Get X/Y pointer position in relation to window.
-    const { clientX, clientY } = event;
-
-    // + Get board offset from window.
-    // + Get board width and height.
-    const {
-      top,
-      left,
-      width,
-      height
-    } = event.currentTarget.getBoundingClientRect();
+  const calculatePerspective = ({
+    clientX,
+    clientY,
+    top,
+    left,
+    width,
+    height,
+  }: Perspective) => {
+    console.log("load control");
 
     // + Get X/Y pointer position in relation to board.
     const pointerX = clientX - left;
@@ -112,8 +118,31 @@ export const Perspective: FunctionComponent<{}> = ({ children }) => {
     setDepth({
       layers: MAX_DEPTH_OFFSET,
       x: xDepth,
-      y: yDepth
+      y: yDepth,
     });
+  };
+
+  const setLoadControlPerspective = useLoadControl(calculatePerspective, {
+    throttleDelay: 100,
+  });
+
+  const handlePointerMove = (event: PointerEvent) => {
+    // Get positive/negative "3D" references for X/Y axis offset:
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    // + Get X/Y pointer position in relation to window.
+    const { clientX, clientY } = event;
+
+    // + Get board offset from window.
+    // + Get board width and height.
+    const {
+      top,
+      left,
+      width,
+      height,
+    } = event.currentTarget.getBoundingClientRect();
+
+    setLoadControlPerspective({ clientX, clientY, top, left, width, height });
   };
 
   return (
