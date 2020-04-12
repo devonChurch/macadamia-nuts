@@ -9,7 +9,7 @@ export interface PositionData {
 }
 
 const getWindowWidth = () => window.innerWidth;
-const getWindowHeight = () => window.outerHeight;
+const getWindowHeight = () => window.innerHeight;
 
 const DEFAULT_POSITION = {
   viewportWidth: getWindowWidth(),

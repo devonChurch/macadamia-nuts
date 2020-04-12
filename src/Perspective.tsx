@@ -95,10 +95,10 @@ const calculatePerspective = ({
   const yRatio = isYPositive
     ? // Start with "zero" as the centre and move up so the top side is "one".
       // Push the top side towards the user.
-      (halfWidth / (halfWidth - pointerY)) * -1
+      (halfHeight / (halfHeight - pointerY)) * -1
     : // Start with "zero" as the centre and move forward so the right side is "one".
       // Push the top side towards the user.
-      halfWidth / (pointerY - halfWidth);
+      halfHeight / (pointerY - halfHeight);
 
   // Calculate degree offset for X/Y.
   const calculateDegrees = (ratio: number): number =>
