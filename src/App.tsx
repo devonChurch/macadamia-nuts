@@ -1,5 +1,5 @@
 import React from "react";
-import { Background } from "./Background";
+import { Shell } from "./Shell";
 import { PositionProvider } from "./Position";
 import { Perspective } from "./Perspective";
 import { Board } from "./Board";
@@ -7,11 +7,11 @@ import { Board } from "./Board";
 function App() {
   return (
     <PositionProvider>
-      <Background>
+      <Shell>
         <Perspective>
           <Board />
         </Perspective>
-      </Background>
+      </Shell>
     </PositionProvider>
   );
 }
