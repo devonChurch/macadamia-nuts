@@ -1,11 +1,14 @@
 import React, { FunctionComponent } from "react";
 import styled, { css } from "styled-components";
 import { usePositionContext, PositionData } from "./Position";
+import { useIconContext, IconColor } from "./Icon";
 
 interface Percentage {
   x: number;
   y: number;
 }
+
+const TRANSFORM_MS_SPEED = 500;
 
 const styleFullPageFixed = css`
   position: fixed;
@@ -15,18 +18,20 @@ const styleFullPageFixed = css`
   height: 100vh;
 `;
 
-const Foreground = styled.div<{ percentage: Percentage }>`
+const Foreground = styled.div<{ percentage: Percentage; colors: IconColor }>`
   ${styleFullPageFixed}
-  background: ${({ percentage }) =>
-    `radial-gradient(circle at ${percentage.x}% ${percentage.y}%, white, #008DBC)`};
+  background: ${({ percentage, colors }) =>
+    `radial-gradient(circle at ${percentage.x}% ${percentage.y}%, white, ${colors.dark})`};
   mix-blend-mode: multiply;
   pointer-events: none;
+  transition: ${TRANSFORM_MS_SPEED};
   z-index: 10;
 `;
 
-const Background = styled.div`
+const Background = styled.div<{ colors: IconColor }>`
   ${styleFullPageFixed}
-  background: #00bfff;
+  background: ${({ colors }) => colors.medium};
+  transition: ${TRANSFORM_MS_SPEED};
   z-index: -1;
 `;
 
@@ -43,12 +48,13 @@ const calculatePercentageOffset = ({
 export const Shell: FunctionComponent<{}> = ({ children }) => {
   const positionData = usePositionContext();
   const percentage = calculatePercentageOffset(positionData);
+  const { iconColors } = useIconContext();
 
   return (
     <>
-      <Foreground percentage={percentage} />
+      <Foreground percentage={percentage} colors={iconColors} />
       {children}
-      <Background />
+      <Background colors={iconColors} />
     </>
   );
 };

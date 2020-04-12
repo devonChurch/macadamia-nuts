@@ -1,7 +1,8 @@
 import React, { FunctionComponent } from "react";
 import styled from "styled-components";
-import { Svg as Board } from "./Board";
+import { Svg as Board } from "./Icon";
 import { usePositionContext, PositionData } from "./Position";
+import { useIconContext, IconColor } from "./Icon";
 
 interface DegreesState {
   x: number;
@@ -26,14 +27,24 @@ interface Perspective {
 const MAX_DEGREES_OFFSET = 25;
 const MAX_DEPTH_OFFSET = 10;
 const TRANSFORM_MS_SPEED = 500;
-const FACE_COLOR = "#C0EFFF"; // "#55a0e2";
-const DEPTH_COLOR = "#008DBC"; // "#007BA3"; // "#376d9c";
 
-const Wrapper = styled.div<{ degrees: DegreesState; depth: DepthState }>`
+const Center = styled.div`
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+`;
+
+const Wrapper = styled.div<{
+  degrees: DegreesState;
+  depth: DepthState;
+  colors: IconColor;
+}>`
   perspective: 80rem;
 
   ${Board} {
-    fill: ${FACE_COLOR};
+    fill: ${({ colors }) => colors.light};
     transition-duration: ${TRANSFORM_MS_SPEED}ms;
     transition-property: transform filter;
     transform: ${({ degrees: { x, y } }) => {
@@ -41,16 +52,16 @@ const Wrapper = styled.div<{ degrees: DegreesState; depth: DepthState }>`
       // opposite axis i.e to change X we target Y (and vice versa).
       return `rotateY(${x}deg) rotateX(${y}deg);`;
     }};
-    filter: ${({ depth: { z, x, y } }) => {
+    filter: ${({ depth: { z, x, y }, colors }) => {
       // Build up each depth layer with a consistent offset incrementer that
       // moves each layer away to simulate a solid Z axis extrude.
       return new Array(z)
         .fill(0)
         .reduce(
           (acc, _, index) =>
-            `${acc} drop-shadow(${x * (index + 1)}px ${
-              y * (index + 1)
-            }px 0px ${DEPTH_COLOR})`,
+            `${acc} drop-shadow(${x * (index + 1)}px ${y * (index + 1)}px 0px ${
+              colors.dark
+            })`,
           ""
         )
         .trimStart();
@@ -119,10 +130,13 @@ const calculatePerspective = ({
 export const Perspective: FunctionComponent<{}> = ({ children }) => {
   const positionData = usePositionContext();
   const { degrees, depth } = calculatePerspective(positionData);
+  const { iconColors } = useIconContext();
 
   return (
-    <Wrapper degrees={degrees} depth={depth}>
-      {children}
-    </Wrapper>
+    <Center>
+      <Wrapper degrees={degrees} depth={depth} colors={iconColors}>
+        {children}
+      </Wrapper>
+    </Center>
   );
 };
