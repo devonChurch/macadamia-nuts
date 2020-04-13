@@ -1,44 +1,109 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Macadamia Nuts 🐿 🌰 😋
 
-## Available Scripts
+[![code style prettier](https://img.shields.io/badge/code_style-prettier-FF69A4.svg)](https://prettier.io/) [![commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/) [![typescript](https://user-images.githubusercontent.com/15273233/40872275-a61d4660-669f-11e8-8edf-860f1947759f.png)](https://www.typescriptlang.org/)
 
-In the project directory, you can run:
+## What 👋
 
-### `npm start`
+A [Google Chrome](https://www.google.com/chrome/) experiment to simulate _3D_ aesthetics within a browser's traditional DOM environment.
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Why 🤷‍♀️
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+This is a fun investigation into some lesser-used browser features that when composed with simple math sequences can yield visually interesting results.
 
-### `npm test`
+## Demo 🕹
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### ➡️ **[You can try the interactive demo here!](https://devonchurch.github.io/macadamia-nuts/)** ⬅️
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+![macadamia-nuts-demo](https://user-images.githubusercontent.com/15273233/79106113-f8895300-7dc5-11ea-9225-5f9f5fed45c5.gif)
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+## How 💡
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+The _3D_ system is built around [CSS Perspective](https://developer.mozilla.org/en-US/docs/Web/CSS/perspective), [CSS Filters](https://developer.mozilla.org/en-US/docs/Web/CSS/filter) and [CSS Blend Modes](https://developer.mozilla.org/en-US/docs/Web/CSS/mix-blend-mode).
 
-### `npm run eject`
+### [CSS Perspective](https://developer.mozilla.org/en-US/docs/Web/CSS/perspective)
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Allows the interactive manipulation of our `<svg />` icons on the _**z-axis**_. This is the foundation for creating the _3D_ _"feel"_. The perspective offset is based on the users' pointer position and has a _min_/_max_ threshold to ensure the `<svg />` icon is always legible.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```scss
+.perspective {
+  perspective: 80rem;
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+  .icon {
+    transform: rotateY(...) rotateX(...);
+  }
+}
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### [CSS Filters](https://developer.mozilla.org/en-US/docs/Web/CSS/filter)
 
-## Learn More
+The solution for giving the `<svg />` icon depth. Specifically using `filter: drop-shadow(...)` to layer up a convincing _**z-axis**_ surface. Using [Styled Components](https://styled-components.com/) allowed the multiple `drop-shadow` layers to be rendered at run time with an incrementing offset.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```scss
+// prettier-ignore
+.icon {
+  filter: 
+    drop-shadow(...) 
+    drop-shadow(...) 
+    drop-shadow(...) 
+    drop-shadow(...)
+    drop-shadow(...) 
+    drop-shadow(...) 
+    drop-shadow(...) 
+    drop-shadow(...)
+    drop-shadow(...) 
+    drop-shadow(...);
+}
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### [CSS Blend Modes](https://developer.mozilla.org/en-US/docs/Web/CSS/mix-blend-mode)
+
+Created a lighting solution that would _blend_ into a scene dynamically against the various different icon color pallets. I opted for a `multiply` function to bring our the _dark_ and _light_ areas with realistic intensities.
+
+The lights focus is based on the users' pointer position, effectively lighting the part of the `<svg />` icon that is closest to the users in the _z-axis_.
+
+```scss
+.lighting {
+  background: radial-gradient(...);
+  mix-blend-mode: multiply;
+}
+```
+
+## Installation 🤖
+
+- Clone this repository
+
+  ```
+  git clone https://github.com/devonChurch/macadamia-nuts.git && cd macadamia-nuts
+  ```
+
+- Install project dependencies
+
+  ```
+  nvm use && npm i
+  ```
+
+- Start a development server on [Port 3000](http://localhost:3000/)
+
+  ```
+  npm start
+  ```
+
+## Deployment 🏁
+
+- Create a _Production_ build
+
+  ```
+  nvm run build
+  ```
+
+- Deploy the application to `gh-pages`
+
+  ```
+  nvm run deploy
+  ```
+
+## License 📜
+
+MIT
