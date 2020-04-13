@@ -24,14 +24,14 @@ const Foreground = styled.div<{ percentage: Percentage; colors: IconColor }>`
     `radial-gradient(circle at ${percentage.x}% ${percentage.y}%, white, ${colors.dark})`};
   mix-blend-mode: multiply;
   pointer-events: none;
-  transition: ${TRANSFORM_MS_SPEED};
+  transition: background ${TRANSFORM_MS_SPEED}ms;
   z-index: 10;
 `;
 
 const Background = styled.div<{ colors: IconColor }>`
   ${styleFullPageFixed}
   background: ${({ colors }) => colors.medium};
-  transition: ${TRANSFORM_MS_SPEED};
+  transition: background ${TRANSFORM_MS_SPEED}ms;
   z-index: -1;
 `;
 
