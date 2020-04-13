@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "399dba35e2ca8bcc82df684fb464d39e",
+    "revision": "e027b5c9539c0827c521b8e254ed3b56",
     "url": "/macadamia-nuts/index.html"
   },
   {
@@ -12,8 +12,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/macadamia-nuts/static/js/2.748a4fe7.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "a8965d89a10f77d7ba91",
-    "url": "/macadamia-nuts/static/js/main.67b1a097.chunk.js"
+    "revision": "56de4c4a42ef51573b53",
+    "url": "/macadamia-nuts/static/js/main.aa938ea9.chunk.js"
   },
   {
     "revision": "60bfd8a5f81887d8c6fd",
