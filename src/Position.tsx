@@ -27,7 +27,7 @@ export const PositionProvider: FunctionComponent<{}> = ({ children }) => {
     DEFAULT_POSITION
   );
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     const calculatePosition = (event: MouseEvent) =>
       setPosition({
         viewportWidth: getWindowWidth(),
@@ -36,14 +36,16 @@ export const PositionProvider: FunctionComponent<{}> = ({ children }) => {
         pointerY: event.clientY,
       });
 
-    const [
-      moveLoadControl,
-      cleanUpMoveLoadControl,
-    ] = LoadControl(calculatePosition, { throttleDelay: 250 });
+    const [moveLoadControl, cleanUpMoveLoadControl] = LoadControl(
+      calculatePosition
+    );
 
     window.addEventListener("pointermove", moveLoadControl);
 
-    return cleanUpMoveLoadControl;
+    return () => {
+      cleanUpMoveLoadControl();
+      window.removeEventListener("pointermove", moveLoadControl);
+    };
   }, []);
 
   return (
