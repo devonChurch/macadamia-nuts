@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.js": "/macadamia-nuts/static/js/main.96d99ca8.chunk.js",
-    "main.js.map": "/macadamia-nuts/static/js/main.96d99ca8.chunk.js.map",
+    "main.js": "/macadamia-nuts/static/js/main.33a31e4b.chunk.js",
+    "main.js.map": "/macadamia-nuts/static/js/main.33a31e4b.chunk.js.map",
     "runtime-main.js": "/macadamia-nuts/static/js/runtime-main.367ac292.js",
     "runtime-main.js.map": "/macadamia-nuts/static/js/runtime-main.367ac292.js.map",
     "static/js/2.748a4fe7.chunk.js": "/macadamia-nuts/static/js/2.748a4fe7.chunk.js",
     "static/js/2.748a4fe7.chunk.js.map": "/macadamia-nuts/static/js/2.748a4fe7.chunk.js.map",
     "index.html": "/macadamia-nuts/index.html",
-    "precache-manifest.e6a9ab9505c0862a7f19e59f8c69a9ab.js": "/macadamia-nuts/precache-manifest.e6a9ab9505c0862a7f19e59f8c69a9ab.js",
+    "precache-manifest.b0dabf659985b009a52025b59625667e.js": "/macadamia-nuts/precache-manifest.b0dabf659985b009a52025b59625667e.js",
     "service-worker.js": "/macadamia-nuts/service-worker.js",
     "static/js/2.748a4fe7.chunk.js.LICENSE.txt": "/macadamia-nuts/static/js/2.748a4fe7.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.367ac292.js",
     "static/js/2.748a4fe7.chunk.js",
-    "static/js/main.96d99ca8.chunk.js"
+    "static/js/main.33a31e4b.chunk.js"
   ]
 }
