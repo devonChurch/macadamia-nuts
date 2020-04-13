@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/macadamia-nuts/precache-manifest.9b5d83a42104ab185d4ca735ae519ff7.js"
+  "/macadamia-nuts/precache-manifest.b831acc01fc1f8afd68b7a3ebb15c6fe.js"
 );
 
 self.addEventListener('message', (event) => {
